@@ -2,14 +2,14 @@
 <html lang="ja">
 <head>
 	<meta charset="UTF-8">
-	<title>MB Tomoのホームページ</title>
+	<title>Piano -MBTomo-</title>
 	<link rel="icon" href="./mbtomo_icon.ico">
 	<link rel="stylesheet" href="../style.css"> 
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@100..900&display=swap" rel="stylesheet">
    	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="description" content="MB Tomoのホームページです">
+    <meta name="description" content="MB Tomo 耳コピ ピアノ">
 	<meta name="google-site-verification" content="4KaTG8_KxpPe17Ok06hu-js_3mQQVvfBb5MLx7Xf7h0" />
 	<meta name="viewport" content="width=device-width,initial-scale=0.8,minimum-scale=0.5,maximum-scale=1.0,user-scalable=no">
 </head>
@@ -31,10 +31,6 @@
 			<p><h1>耳コピピアノアレンジの部屋</h1></p>
 			<p>VOCALOIDやhololiveの楽曲を耳コピして、ピアノのみで再現する動画を作成しています</p>
 			<p><iframe width="560" height="315" src="https://www.youtube.com/embed/_MwjBKt1lgg?si=Ta7bxcSEx6tebVLz" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></p>
-			<!-- 
-			<p><em>->おすすめ-></em>
-			<em><a href="">今日の問題11(それ以前はない)</a></em></p> 
-			-->
         	<br>
 		</div>
 	
@@ -49,6 +45,68 @@
 						<p>リクエストはこちらから!</p>
 						<p><a href="https://forms.office.com/r/nENRCn5xmA">こちら！</a></p>
 						</div>
+
+<h2>HTML テーブル絞込み例</h2>
+<label for="searchInput">検索:</label>
+<input type="text" id="searchInput" placeholder="キーワードを入力">
+
+<table id="myTable">
+  <thead>
+    <tr>
+      <th>名前</th>
+      <th>年齢</th>
+      <th>都市</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>山田太郎</td>
+      <td>30</td>
+      <td>熊本</td>
+    </tr>
+    <tr>
+      <td>佐藤花子</td>
+      <td>25</td>
+      <td>福岡</td>
+    </tr>
+    <tr>
+      <td>鈴木次郎</td>
+      <td>28</td>
+      <td>鹿児島</td>
+    </tr>
+    <tr>
+      <td>田中美咲</td>
+      <td>32</td>
+      <td>熊本</td>
+    </tr>
+  </tbody>
+</table>
+
+<script>
+  // 入力ボックスに応じてテーブルを絞り込み
+  const input = document.getElementById("searchInput");
+  const table = document.getElementById("myTable").getElementsByTagName("tbody")[0];
+
+  input.addEventListener("keyup", function() {
+    const filter = input.value.toLowerCase();
+    const rows = table.getElementsByTagName("tr");
+
+    for (let i = 0; i < rows.length; i++) {
+      const cells = rows[i].getElementsByTagName("td");
+      let showRow = false;
+
+      // 各セルをチェックして検索文字列を含む場合は表示
+      for (let j = 0; j < cells.length; j++) {
+        if (cells[j].textContent.toLowerCase().includes(filter)) {
+          showRow = true;
+          break;
+        }
+      }
+
+      rows[i].style.display = showRow? "" : "none";
+    }
+  });
+</script>
 						
 					</div>
 					
