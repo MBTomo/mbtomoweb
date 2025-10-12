@@ -1,7 +1,10 @@
 <!DOCTYPE html>
-<!-- saved from url=(0035)http://192.168.0.80/ex1/index5.html -->
-<html lang="ja"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><style data-merge-styles="true"></style>
-  <style data-merge-styles="true"></style><style data-merge-styles="true"></style>
+<html lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <style data-merge-styles="true"></style>
+  <style data-merge-styles="true"></style>
+  <style data-merge-styles="true"></style>
   <title>松橋駅　バス乗換案内</title>
   <style>
     body {background-color: black; }
@@ -23,7 +26,6 @@
     .cell { overflow: hidden; position: relative;  border: 1px solid #ccc; }
     .scroll-text { display: inline-block; white-space: nowrap; }
     .scroll-text.scroll { animation: scroll-left 7s linear infinite; }
-
     @keyframes scroll-left {
       0% {
         transform: translateX(0%);
@@ -114,7 +116,7 @@
         rows = pre_rows.filter(row => allowed.includes(row.service_id));
       }
       console.log(rows);
-      // console.log(today.getDay());
+      // console.log(rows);
 
       // 3. 現在時刻を HH:MM に
       const now = new Date();
@@ -163,23 +165,14 @@
           else td_en.textContent = 'Temporary Route';
         } 
       }
-      
-      function add_scroll(div) { 
-        let cellWidth = div.parentElement.offsetWidth;
-        let textWidth = div.scrollWidth;
-        if (textWidth > cellWidth) {
-          div.classList.add('scroll');
-        }
-      }
-      
       function diff(bt, at) {
         let dt = [bt, at].map(v => {
           v = v.split(":");
           console.log(parseInt(v[0]) + parseInt(v[1]));
           return parseInt(v[0])*60 + parseInt(v[1]);
         }).reduce((p, c) => c-p);
-        if (dt<60 && dt!=0) return (dt + "分後");
-        else if (dt===0) return("まもなく");
+        if (dt===0) return("まもなく");
+        else if (dt<60 && dt!=0) return (dt + "分後");
         else if (dt%60 === 0) return ((dt/60) + "時間後" );
         else if (dt>60) return (parseInt(dt/60) + "時間" + (dt%60) + "分後");
       }
@@ -323,22 +316,22 @@
         });
       }      
     }
-  //7. テキストを動かす
-function initScrollText() {
-  const elements = document.getElementsByClassName('scroll-text');
-  console.log('要素数:', elements.length);
-  for (let i = 0; i < elements.length; i++) {
-    //console.log('in!');
-    const text = elements[i];
-    const cellWidth = text.parentElement.offsetWidth;
-    const textWidth = text.scrollWidth;
-
-    if (textWidth > cellWidth) {
-      //console.log('in');
-      text.classList.add('scroll');
+    //7. テキストを動かす
+    function initScrollText() {
+      const elements = document.getElementsByClassName('scroll-text');
+      console.log('要素数:', elements.length);
+        
+      for (let i = 0; i < elements.length; i++) {
+        //console.log('in!');
+        const text = elements[i];
+        const cellWidth = text.parentElement.offsetWidth;
+        const textWidth = text.scrollWidth;
+        if (textWidth > cellWidth) {
+          //console.log('in');
+          text.classList.add('scroll');
+        }
+      }
     }
-  }
-}
   </script>
 </head>
 <body>
@@ -346,14 +339,14 @@ function initScrollText() {
     <div class="header-left"><h1>松橋駅　バス乗換案内</h1></div>
     <div class="header-right"><h1><div id="current-time">10/10 (金) 現在時刻 : 12:00:17</div></h1></div>
   </div>
-  <!--- <br>
-  <h2><div id="alert">○Alert! : --- No Alert ---</div></h2> --->
+  <br>
+  <!--- <h2><div id="alert">○Alert! : --- No Alert ---</div></h2> --->
   <div id="table">
   <div class="table_left">
     <h3>・南方面  [ South ]</h3>
     <table class="cell" id="south">
       <colgroup>
-        <col style="width: 175px;">
+        <col style="width: 170px;">
         <col>
       </colgroup>
       <thead>
