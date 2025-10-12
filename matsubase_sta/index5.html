@@ -14,6 +14,7 @@
     .header-right {font-size: 18px; display: flex; padding-right:25px; padding-top:6px; }
     p { font-size: 18px; margin: 2px; }
     #time { font-size: 48px; }
+    h1 { margin-top: 8px; margin-bottom: 10px; }
     h2 { width: 95%; margin: auto; }
     #table { margin-left: 1%; margin-right: 1%; }
     .table_left { width: 48%; display: inline-block; }
@@ -23,38 +24,34 @@
     .scroll-text { display: inline-block; white-space: nowrap; }
     .scroll-text.scroll { animation: scroll-left 7s linear infinite; }
 
-@keyframes scroll-left {
-  0% {
-    transform: translateX(0%);
-  }
-  18% {
-    transform: translateX(0%);
-  }
-  82% {
-    transform: translateX(calc(-100% + 550px));
-  }
-  100% {
-    transform: translateX(calc(-100% + 550px));
-  }
-}
-
+    @keyframes scroll-left {
+      0% {
+        transform: translateX(0%);
+      }
+      18% {
+        transform: translateX(0%);
+      }
+      82% {
+        transform: translateX(calc(-100% + 380px));
+      }
+      100% {
+        transform: translateX(calc(-100% + 380px));
+      }
+    }
   </style>
   <script defer="">
     const CSV_PATH      = 'merged_matsubasesta.csv';
-    const REFRESH_MS    = 15000;  // 30秒ごと更新
+    const REFRESH_MS    = 15000;  // 更新
     const DISPLAY_COUNT = 2;
     const DISPLAY_COUNT2 = 1;
 
     window.addEventListener('DOMContentLoaded', () => {
       updateSchedule();
-      // initScrollText();
-if (document.readyState !== 'loading') {
-  //DOMContentLoaded は既に発火済み
-  initScrollText();
-} else {
-   発火前なら登録
-  document.addEventListener('DOMContentLoaded', initScrollText);
-}
+      if (document.readyState !== 'loading') {
+        initScrollText();
+      } else {
+        document.addEventListener('DOMContentLoaded', initScrollText);
+      }
       setInterval(updateSchedule, REFRESH_MS);
       setInterval(displayCurrentTime, 1000);   // 1秒ごとに時刻更新
       setInterval(initScrollText, 1000);
