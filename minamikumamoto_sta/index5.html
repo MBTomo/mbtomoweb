@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <style data-merge-styles="true"></style>
+  <script src="https://cdn.jsdelivr.net/gh/osamutake/japanese-holidays-js@v1.0.10/lib/japanese-holidays.min.js"></script>
+  <title>南熊本駅　バス乗換案内</title>
+  <style>
+    body {background-color: black; }
+    table { border-collapse: collapse; width: 100%; table-layout: fixed; color: white; }
+    th, td { border: 3px solid #ccc; padding: 8px; text-align: left; overflow: hidden;}
+    thead { background: #65082f; font-size: 26px; }
+    tbody { font-size: 26px; font-weight: bold;}
+    #header {display: flex; text-align: center; background-color: #65082f; color: white; width: 98%; margin: auto; }
+    .header-left {display: flex; margin-right: auto; font-size:16px; padding-left: 20px;}
+    .header-right {font-size: 14px; display: flex; padding-right:25px; padding-top:6px; }
+    p { font-size: 16px; margin: 2px; }
+    #time { font-size: 36px; }
+    h1 { margin-top: 8px; margin-bottom: 10px; }
+    h2 { width: 95%; margin: auto; }
+    #table { margin-left: 1%; margin-right: 1%; }
+    .table_left { width: 48%; display: inline-block; }
+    .table_right { width: 48%; display: inline-block; float: right; margin-right: 0; }
+    h3 { font-size: 30px; margin: auto; padding-top: 5px; color: white; }
+    .cell { overflow: hidden; position: relative;  border: 1px solid #ccc; }
+    .scroll-text { display: inline-block; white-space: nowrap; }
+    .scroll-text.scroll { animation: scroll-left 7s linear infinite; }
+    @keyframes scroll-left {
+      0% {
+        transform: translateX(0%);
+      }
+      18% {
+        transform: translateX(0%);
+      }
+      82% {
+        transform: translateX(calc(-100% + 410px));
+      }
+      100% {
+        transform: translateX(calc(-100% + 410px));
+      }
+    }
+  </style>
+  <script defer="">
+    const CSV_PATH      = 'merged_minamikumamotosta.csv';
+    const REFRESH_MS    = 15000;  // 更新
+    const DISPLAY_COUNT = 2;
+    const DISPLAY_COUNT2 = 1;
+
+    window.addEventListener('DOMContentLoaded', () => {
+      updateSchedule();
+      if (document.readyState !== 'loading') {
+        initScrollText();
+      } else {
+        document.addEventListener('DOMContentLoaded', initScrollText);
+      }
+      setInterval(updateSchedule, REFRESH_MS);
+      setInterval(displayCurrentTime, 1000);   // 1秒ごとに時刻更新
+      setInterval(initScrollText, 1000);
+    });
+        
+    // 現在時刻をフォーマットして表示
+    function displayCurrentTime() {
+      const now = new Date();
+      const pad = n => n.toString().padStart(2, '0');
+      const nowtoday = ["日","月","火","水","木","金","土"]
+      const formatted = `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+      document.getElementById('current-time').textContent = (now.getMonth()+1) + '/' + now.getDate() + ' (' + nowtoday[now.getDay()] + ') ' + '現在時刻 : ' + formatted;
+    }
+
+    async function updateSchedule() {
+      // 1. CSV取得
+      const res  = await fetch(CSV_PATH, { cache: 'no-store' });
+      const text = await res.text();
+      // console.log(text);
+
+      // 2. 行分割＋オブジェクト化
+      const lines   = text.split('\n').map(l => l.trim()).filter(l => l);
+      const headers = lines.shift().split(',').map(h => h.trim());
+      const pre_rows    = lines.map(line => {
+        const cols = line.split(',').map(c => c.trim());
+        // console.log(cols);
+        return headers.reduce((o, k, i) => (o[k] = cols[i], o), {});
+      });
+      // console.log(pre_rows);
+      
+      let rows = [];
+      const today = new Date();
+      console.log(JapaneseHolidays.isHoliday(today));
+      if (today.getDay() === 0 || JapaneseHolidays.isHoliday(today) != undefined) {
+        const allowed = ['7'];
+        rows = pre_rows.filter(row => allowed.includes(row.service_id));
+      }
+      else if (today.getDay() === 1) {
+        const allowed = ['0', '1', '8'];
+        rows = pre_rows.filter(row => allowed.includes(row.service_id));
+      }
+      else if (today.getDay() === 2) {
+        const allowed = ['0', '2', '8'];
+        rows = pre_rows.filter(row => allowed.includes(row.service_id));
+      }
+      else if (today.getDay() === 3) {
+        const allowed = ['0', '3', '8'];
+        rows = pre_rows.filter(row => allowed.includes(row.service_id));
+      }
+      else if (today.getDay() === 4) {
+        const allowed = ['0', '4', '8'];
+        rows = pre_rows.filter(row => allowed.includes(row.service_id));
+      }
+      else if (today.getDay() === 5) {
+        const allowed = ['0', '5'];
+        rows = pre_rows.filter(row => allowed.includes(row.service_id));
+      }
+      else if (today.getDay() === 6) {
+        const allowed = ['6'];
+        rows = pre_rows.filter(row => allowed.includes(row.service_id));
+      }
+      console.log(rows);
+      
+      // 3. 現在時刻を HH:MM に
+      const now = new Date();
+      const pad = n => String(n).padStart(2, '0');
+      const nowHM = `${pad(now.getHours())}:${pad(now.getMinutes())}`;
+
+      // 4. departure_time を HH:MM に切り出し
+      const formatted = rows.map(r => {
+        const [h, m] = r.departure_time.split(':');
+        r._hm = `${pad(Number(h))}:${pad(Number(m))}`;
+        return r;
+      });
+
+      // 5. 文字列比較でフィルタ（HH:MM同士は辞書式順序でOK）
+      const upcoming = formatted
+        .filter(r => r._hm >= nowHM)
+        // .slice(0, DISPLAY_COUNT);
+      
+      // 6. テーブル描画
+      function service_end(tbody1) {
+        const tr_fin = document.createElement('tr');
+        ['stop_id', '_hm', 'route_long_name'].forEach(key2 => {  
+          const td_fin = document.createElement('td');
+          const td_fin_div = document.createElement('div');
+          td_fin_div.className = 'scroll-text';
+          if (key2 === 'route_long_name') {
+            td_fin_div.textContent = '本日の運行は終了しました。(The bus serivce has ended today.)';
+            //console.log(key2);
+          }
+          else td_fin_div.textContent = '---';
+          td_fin.appendChild(td_fin_div);
+          tr_fin.appendChild(td_fin);
+        });
+        tbody1.appendChild(tr_fin);
+      }
+      function translation(r, key, td_en){
+        if (key === 'route_long_name') {
+          if (r[key] === 'M6-3：松橋駅→城南→イオン→田迎→桜町バスターミナル') td_en.textContent = ' M6-3： Via Jonan, AEONMALL Kumamoto, Tamukae, Kumamoto Sakuramachi Bus Terminal';
+          else if (r[key] === '４：松橋駅→宮原～八代駅→八代産交') td_en.textContent = ' 4： Via Miyanohara, Yatsushiro Station, Yatsushiro-Sanko';
+          else if (r[key] === '５：松橋駅→鏡四つ角～大村→八代市役所') td_en.textContent = ' 5：Via Kagami-Yotsukado, Omura, Yatsushiro City Office';
+          else if (r[key] === '松橋駅→大口～三角病院→三角産交') td_en.textContent = 'Via Matsuai, Okuchi, Misumi Hospital, Misumi-Sanko';
+          else if (r[key] === '松橋駅→堅志田～佐俣の湯→砥用中央') td_en.textContent = 'Via Yamazaki-Bridge, Katashida, Samata Hotspring, Tomochi-Chuo';
+          else if (r[key] === '松橋駅→宇土本町二丁目～西城の浦→宇土駅前') td_en.textContent = 'Via Uto High School, Uto-Honmachi 2-Chome, West Jonoura, Uto Station';
+          else if (r[key] === '宇土本町二丁目→山崎橋～堅志田→砥用中央') td_en.textContent = 'Yamazaki-Bridge, Katashida, Samata, Tomochi-Chuo';
+          else if (r[key] === '砥用中央→堅志田～山崎橋→宇土本町二丁目') td_en.textContent = 'Via Uto High School, Uto-Honmachi 2-Chome';
+          else td_en.textContent = 'Temporary Route';
+        } 
+      }
+      function diff(bt, at) {
+        let dt = [bt, at].map(v => {
+          v = v.split(":");
+          console.log(parseInt(v[0]) + parseInt(v[1]));
+          return parseInt(v[0])*60 + parseInt(v[1]);
+        }).reduce((p, c) => c-p);
+        if (dt===0) return("まもなく");
+        else if (dt<60 && dt!=0) return (dt + "分後");
+        else if (dt%60 === 0) return ((dt/60) + "時間後" );
+        else if (dt>60) return (parseInt(dt/60) + "時間" + (dt%60) + "分後");
+      }
+
+      const tbody_north = document.querySelector('#north tbody');
+      tbody_north.innerHTML = '';
+      const bus_north = ["P2-2：桜町バスターミナル→大学病院→御幸木部", "P2-3：桜町バスターミナル→大学病院→御幸病院→御幸木部", "P3-1：変電所→桜町バスターミナル→南熊本駅→長溝団地", "P3-1：桜町バスターミナル→新市街→南熊本駅→長溝団地", "P3-1：南熊本駅→長溝団地", "P1-1：桜町バスターミナル→辛島町→萩原→済生会病院", "P2-1：桜町バスターミナル→下通筋→平成町→済生会病院→野越団地", "P2-1：南熊本駅→平成町→済生会病院→野越団地"];
+      let upcoming_filter = upcoming.filter(filt1 => bus_north.includes(filt1.route_long_name)).slice(0, DISPLAY_COUNT2);
+      if (upcoming_filter.length === 0) {
+        service_end(tbody_north);
+      }
+      else { 
+        upcoming_filter.forEach(r => {
+          const tr_north = document.createElement('tr');
+          ['stop_id', '_hm', 'route_long_name'].forEach(key => {
+            const td_north = document.createElement('td');
+            const td_north_div = document.createElement('div');
+            td_north_div.className = 'scroll-text';
+            if (key === '_hm') {
+              const td_hm_north = document.createElement('div');
+              td_hm_north.id = 'time';
+              td_hm_north.textContent = key === '_hm' ? r._hm : r[key] || '—';
+              const td_hm_north_time = document.createElement('p');
+              td_hm_north_time.textContent = (diff(nowHM, r._hm));
+              td_hm_north.appendChild(td_hm_north_time);
+              td_north_div.appendChild(td_hm_north);
+            }
+            else if (key === 'stop_id') {
+              td_north_div.textContent = r[key];
+            }
+            else td_north_div.textContent = key === '_hm' ? r._hm : r[key] || '—';
+            const td_en_north = document.createElement('p');
+            translation(r, key, td_en_north);
+            // console.log(upcoming, r[key], key);
+            td_north_div.appendChild(td_en_north);
+            td_north.appendChild(td_north_div);
+            tr_north.appendChild(td_north);
+          });
+          tbody_north.appendChild(tr_north);
+        });
+      }
+      
+      const tbody_south = document.querySelector('#south tbody');
+      tbody_south.innerHTML = '';
+      const bus_south = ["M3-2：通潤山荘→イオン→田迎→桜町バスターミナル", "M4-1：甲佐→辺場→イオン→田迎→桜町バスターミナル", "M4-2：砥用→辺場→イオン→田迎→桜町バスターミナル", "M4-3：浜町→内大臣→辺場→イオン→田迎→桜町バスターミナル", "M3-1：甲佐→御船→イオン→田迎→桜町バスターミナル", "M1-1：中の瀬車庫→田迎→桜町バスターミナル", "M2-1：イオン→中の瀬車庫→田迎→桜町バスターミナル", "M2-1：イオン→中車庫→田迎→桜町バスターミナル→熊本駅", "M6-1：城南→イオン→田迎→桜町バスターミナル", "M6-2：宇土駅→城南→イオン→田迎→桜町バスターミナル", "M6-3：松橋駅→城南→イオン→田迎→桜町バスターミナル", "M6-4：志導寺→城南→イオン→田迎→桜町バスターミナル", "M6-6：段鶴→城南→イオン→田迎→桜町バスターミナル", "M5-1：甲佐→乙女→イオン→田迎→桜町バスターミナル", "P2-4：御幸木部→大学病院構内→桜町バスターミナル", "P2-5：御幸木部→御幸病院→大学病院構内→桜町バスターミナル", "G4-1：長溝団地→南熊本駅→桜町バスターミナル→変電所", "P3-1：長溝団地→南熊本駅→新市街→桜町バスターミナル", "P2-1：野越団地→済生会病院→平成町→下通筋→桜町バスターミナル", "L0-0：桜町バスターミナル→画図道→南熊本駅→下通筋→桜町バスターミナル", "P1-1：済生会病院→萩原→辛島町→桜町バスターミナル"];
+      upcoming_filter = upcoming.filter(filt2 => bus_south.includes(filt2.route_long_name)).slice(0, DISPLAY_COUNT);
+      if (upcoming_filter.length === 0) {
+        service_end(tbody_south);
+      }
+      else { 
+        upcoming_filter.forEach(r => {
+          const tr_south = document.createElement('tr');
+          ['stop_id', '_hm', 'route_long_name'].forEach(key => {
+            const td_south = document.createElement('td');
+            const td_south_div = document.createElement('div');
+            td_south_div.className = 'scroll-text';
+            if (key === '_hm') {
+              const td_hm_south = document.createElement('div');
+              td_hm_south.id = 'time';
+              td_hm_south.textContent = key === '_hm' ? r._hm : r[key] || '—';
+              const td_hm_south_time = document.createElement('p');
+              td_hm_south_time.textContent = (diff(nowHM, r._hm));
+              td_hm_south.appendChild(td_hm_south_time);
+              td_south_div.appendChild(td_hm_south);
+            }
+            else if (key === 'stop_id') {
+              td_south_div.textContent = r[key];
+            }
+            else td_south_div.textContent = key === '_hm' ? r._hm : r[key] || '—';
+            const td_en_south = document.createElement('p');
+            translation(r, key, td_en_south);
+            // console.log(upcoming, r[key], key);
+            td_south_div.appendChild(td_en_south);
+            td_south.appendChild(td_south_div);
+            tr_south.appendChild(td_south);
+          });
+          tbody_south.appendChild(tr_south);  
+        });
+      }
+      const tbody_east = document.querySelector('#east tbody');
+      tbody_east.innerHTML = '';
+      const bus_east = ["M3-2：桜町バスターミナル→田迎→イオン→通潤山荘", "M4-1：桜町バスターミナル→田迎→イオン→辺場→甲佐", "M4-2：桜町バスターミナル→田迎→イオン→辺場→砥用", "M4-3：桜町バスターミナル→田迎→イオン→辺場→内大臣→浜町", "K2-4/M4-1：甲佐→辺場→イオン→田迎→桜町バスターミナル・県庁・健軍→甲佐", "M3-1：桜町バスターミナル→田迎→イオン→御船→甲佐", "M1-1：桜町バスターミナル→田迎→中の瀬車庫", "M2-1：桜町バスターミナル→田迎→中の瀬車庫→イオン", "M2-1：◆深夜◆桜町バスターミナル→田迎→中車庫→イオン", "M2-1：熊本駅→桜町バスターミナル→田迎→中車庫→イオン", "M0-0：中の瀬車庫ー田迎ー桜町BTー中央病院ー中の瀬車庫", "M6-1：桜町バスターミナル→田迎→イオン→城南", "M6-2：桜町バスターミナル→田迎→イオン→城南→宇土駅", "M6-3：桜町バスターミナル→田迎→イオン→城南→松橋駅", "M6-4：桜町バスターミナル→田迎→イオン→城南→志導寺", "M6-5：桜町バスターミナル→田迎→イオン→城南→志導寺→下安見", "M6-6：桜町バスターミナル→田迎→イオン→城南→段鶴", "M5-1：桜町バスターミナル→田迎→イオン→乙女→甲佐"];
+      upcoming_filter = upcoming.filter(filt3 => bus_east.includes(filt3.route_long_name)).slice(0, DISPLAY_COUNT);
+      if (upcoming_filter.length === 0) {
+        service_end(tbody_east);
+      }
+      else { 
+        upcoming_filter.forEach(r => {
+          const tr_east = document.createElement('tr');
+          ['stop_id', '_hm', 'route_long_name'].forEach(key => {
+            const td_east = document.createElement('td');
+            const td_east_div = document.createElement('div');
+            td_east_div.className = 'scroll-text';
+            if (key === '_hm') {
+              const td_hm_east = document.createElement('div');
+              td_hm_east.id = 'time';
+              td_hm_east.textContent = key === '_hm' ? r._hm : r[key] || '—';
+              const td_hm_east_time = document.createElement('p');
+              td_hm_east_time.textContent = (diff(nowHM, r._hm));
+              td_hm_east.appendChild(td_hm_east_time);
+              td_east_div.appendChild(td_hm_east);
+            }
+            else if (key === 'stop_id') {
+              td_east_div.textContent = r[key];
+            }
+            else td_east_div.textContent = key === '_hm' ? r._hm : r[key] || '—';
+            const td_en_east = document.createElement('p');
+            translation(r, key, td_en_east);
+            // console.log(upcoming, r[key], key);
+            td_east_div.appendChild(td_en_east);
+            td_east.appendChild(td_east_div);
+            tr_east.appendChild(td_east);
+          });
+          tbody_east.appendChild(tr_east);  
+        });
+      }
+      const tbody_west = document.querySelector('#west tbody');
+      tbody_west.innerHTML = '';
+      const bus_west = ["O4-0：熊本駅→南熊本駅→県立劇場→本荘町→熊本駅", "O4-1：熊本駅→南熊本駅→県立劇場", "O3-1：県立劇場→南熊本駅→熊本駅", "O3-0：熊本駅→本荘町→大学病院構内→県立劇場→南熊本駅→熊本駅", "P0-0：桜町バスターミナル→下通筋→南熊本駅→画図道→桜町バスターミナル"];
+      upcoming_filter = upcoming.filter(filt4 => bus_west.includes(filt4.route_long_name)).slice(0, DISPLAY_COUNT2);
+      if (upcoming_filter.length === 0) {
+        service_end(tbody_west);
+      }
+      else { 
+        upcoming_filter.forEach(r => {
+          const tr_west = document.createElement('tr');
+          ['stop_id', '_hm', 'route_long_name'].forEach(key => {
+            const td_west = document.createElement('td');
+            const td_west_div = document.createElement('div');
+            td_west_div.className = 'scroll-text';
+            if (key === '_hm') {
+              const td_hm_west = document.createElement('div');
+              td_hm_west.id = 'time';
+              td_hm_west.textContent = key === '_hm' ? r._hm : r[key] || '—';
+              const td_hm_west_time = document.createElement('p');
+              td_hm_west_time.textContent = (diff(nowHM, r._hm));
+              td_hm_west.appendChild(td_hm_west_time);
+              td_west_div.appendChild(td_hm_west);
+            }
+            else if (key === 'stop_id') {
+              td_west_div.textContent = r[key];
+            }
+            else td_west_div.textContent = key === '_hm' ? r._hm : r[key] || '—';
+            const td_en_west = document.createElement('p');
+            translation(r, key, td_en_west);
+            // console.log(upcoming, r[key], key);
+            td_west_div.appendChild(td_en_west);
+            td_west.appendChild(td_west_div);
+            tr_west.appendChild(td_west);
+          });
+          tbody_west.appendChild(tr_west);  
+        });
+      }      
+    }
+    //7. テキストを動かす
+    function initScrollText() {
+      const elements = document.getElementsByClassName('scroll-text');
+      // console.log('要素数:', elements.length);  
+      for (let i = 0; i < elements.length; i++) {
+        const text = elements[i];
+        const cellWidth = text.parentElement.offsetWidth;
+        const textWidth = text.scrollWidth;
+        if (textWidth > cellWidth) {
+          //console.log('in');
+          text.classList.add('scroll');
+        }
+      }
+    }
+  </script>
+</head>
+<body>
+  <div id="header">
+    <div class="header-left"><h1>松橋駅　バス乗換案内</h1></div>
+    <div class="header-right"><h1><div id="current-time"></div></h1></div>
+  </div>
+  <br>
+  <!--- <h2><div id="alert">○Alert! : --- No Alert ---</div></h2> --->
+  <div id="table">
+  <div class="table_left">
+    <h3>・市街地方面</h3>
+    <table class="cell" id="south">
+      <colgroup>
+        <col style="width: 159px;">
+        <col>
+      </colgroup>
+      <thead>
+        <tr>
+          <th></th>
+          <th>出発時刻<p>(Departure Time)</p></th>
+          <th>路線名・経由地<p>(Route Name・ Via)</p></th>
+        </tr>
+      </thead>
+      <tbody></tbody></tbody>
+    </table>
+    <br>
+    <h3>・御幸木部 / 済生会病院方面</h3>
+    <table class="cell" id="north">
+      <colgroup>
+        <col style="width: 159px;">
+        <col>
+      </colgroup>
+      <thead>
+        <tr>
+          <th></th>
+          <th>出発時刻<p>(Departure Time)</p></th>
+          <th>路線名・経由地<p>(Route Name・ Via)</p></th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+  <div class="table_right">
+    <h3>・イオン熊本 / 城南 / 矢部方面</h3>
+    <table class="cell" id="east">
+      <colgroup>
+        <col style="width: 159px;">
+        <col>
+      </colgroup>
+      <thead>
+        <tr>
+          <th></th>
+          <th>出発時刻<p>(Departure Time)</p></th>
+          <th>路線名・経由地<p>(Route Name・ Via)</p></th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+    <br> 
+    <h3>・八王子循環 / 県立劇場方面</h3>
+    <table class="cell" id="west">
+      <colgroup>
+        <col style="width: 159px;">
+        <col>
+      </colgroup>
+      <thead>
+        <tr>
+          <th></th>
+          <th>出発時刻<p>(Departure Time)</p></th>
+          <th>路線名・経由地<p>(Route Name・ Via)</p></th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+  </div>
+
+<deepl-input-controller translate="no"><template shadowrootmode="open"><link rel="stylesheet" href="chrome-extension://cofdbpoegempjloogbagkncekinflcnj/build/content.css"><div dir="ltr" style="visibility: initial !important;"><div class="dl-input-translation-container svelte-95aucy"><div></div></div></div></template></deepl-input-controller>
+</body>
+</html>
