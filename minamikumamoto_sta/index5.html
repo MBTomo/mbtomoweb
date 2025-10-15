@@ -40,7 +40,7 @@
       }
     }
   </style>
-  <script defer="">
+  <script defer>
     const CSV_PATH      = 'merged_minamikumamotosta.csv';
     const REFRESH_MS    = 15000;  // 更新
     const DISPLAY_COUNT = 2;
@@ -393,7 +393,7 @@
 <body>
   <div id="header">
     <div class="header-left"><h1>南熊本駅　バス乗換案内</h1></div>
-    <div class="header-right"><h1><div id="current-time"></div></h1></div>
+    <div class="header-right"><h1 id="current-time"></h1></div>
   </div>
   <br>
   <!--- <h2><div id="alert">○Alert! : --- No Alert ---</div></h2> --->
@@ -413,7 +413,7 @@
           <th>路線名・経由地<p>(Route Name・ Via)</p></th>
         </tr>
       </thead>
-      <tbody></tbody></tbody>
+      <tbody></tbody>
     </table>
     <br>
     <h3>・御幸木部 / 済生会病院方面</h3>
@@ -469,7 +469,5 @@
     </table>
   </div>
   </div>
-
-<deepl-input-controller translate="no"><template shadowrootmode="open"><link rel="stylesheet" href="chrome-extension://cofdbpoegempjloogbagkncekinflcnj/build/content.css"><div dir="ltr" style="visibility: initial !important;"><div class="dl-input-translation-container svelte-95aucy"><div></div></div></div></template></deepl-input-controller>
 </body>
 </html>
