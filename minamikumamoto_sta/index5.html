@@ -71,25 +71,44 @@
       // 1. CSV取得
       const res  = await fetch(CSV_PATH, { cache: 'no-store' });
       const text = await res.text();
+
+      const res2 = await fetch("calendar_minamikumamotosta.csv", { cache: 'no-store' });
+      const text2 = await res2.text();
+
+      const res3 = await fetch("calendarexc_minamikumamotosta.csv", { cache: 'no-store' })
+      const text3 = await res3.text();
       // console.log(text);
 
       // 2. 行分割＋オブジェクト化
-      const lines   = text.split('\n').map(l => l.trim()).filter(l => l);
-      const headers = lines.shift().split(',').map(h => h.trim());
+      let lines   = text.split('\n').map(l => l.trim()).filter(l => l);
+      let headers = lines.shift().split(',').map(h => h.trim());
       const pre_rows    = lines.map(line => {
-        const cols = line.split(',').map(c => c.trim());
+        let cols = line.split(',').map(c => c.trim());
         // console.log(cols);
         return headers.reduce((o, k, i) => (o[k] = cols[i], o), {});
       });
+
+      lines   = text2.split('\n').map(l => l.trim()).filter(l => l);
+      headers = lines.shift().split(',').map(h => h.trim());
+      const now2 = new Date();
+      const pre_rows2 = lines.map(line => {
+        let cols = line.split(',').map(c => c.trim());
+        console.log(lines);
+        return headers.reduce((o, k, i) => {
+          return (o[k] = cols[i], o);
+        }, {});
+      });
+      
+      lines   = text3.split('\n').map(l => l.trim()).filter(l => l);
+      headers = lines.shift().split(',').map(h => h.trim());
+      const pre_rows3 = lines.map(line => {
+        let cols = line.split(',').map(c => c.trim());
+        return headers.reduce((o, k, i) => (o[k] = cols[i], o), {});
+      });
+      
       // console.log(pre_rows);
       
       let rows = [];
-      const today = new Date();
-      console.log(JapaneseHolidays.isHoliday(today));
-      if (today.getDay() === 0 || JapaneseHolidays.isHoliday(today) != undefined) {
-        const allowed = ['7'];
-        rows = pre_rows.filter(row => allowed.includes(row.service_id));
-      }
       else if (today.getDay() === 1) {
         const allowed = ['0', '1', '8'];
         rows = pre_rows.filter(row => allowed.includes(row.service_id));
