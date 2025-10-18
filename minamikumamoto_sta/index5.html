@@ -109,7 +109,7 @@
       // console.log(pre_rows);
       
       let rows = [];
-      else if (today.getDay() === 1) {
+      if (today.getDay() === 1) {
         const allowed = ['0', '1', '8'];
         rows = pre_rows.filter(row => allowed.includes(row.service_id));
       }
