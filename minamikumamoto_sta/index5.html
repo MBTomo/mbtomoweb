@@ -104,8 +104,12 @@
       headers = lines.shift().split(',').map(h => h.trim());
       const pre_rows3 = lines.map(line => {
         let cols = line.split(',').map(c => c.trim());
-        return headers.reduce((o, k, i) => (o[k] = cols[i], o), {});
+        const year = now2.getFullYear();
+        const month = ('00' + (now2.getMonth() + 1)).slice(-2);
+        const day = ('00' + now2.getDate()).slice(-2);
+        return cols.filter(row => [(year+month+day).toString].includes(row.date));
       });
+      console.log(pre_rows3);
       
       // console.log(pre_rows);
       const today = new Date();
