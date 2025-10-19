@@ -98,7 +98,7 @@
         return (cols[todayIndex] === '1' ? [cols[serviceIdIndex]] : []);
       });
       const pre_rows2 = nested.flat().filter(Boolean);
-      console.log(pre_rows2);
+      // console.log(pre_rows2);
       
       lines   = text3.split('\n').map(l => l.trim()).filter(l => l);
       headers = lines.shift().split(',').map(h => h.trim());
@@ -106,22 +106,22 @@
         let cols = line.split(',').map(c => c.trim());
         return headers.reduce((o, k, i) => (o[k] = cols[i], o), {});
       });
-      console.log(pre_rows3);
+      // console.log(pre_rows3);
       const year = now2.getFullYear();
       const month = ('00' + (now2.getMonth() + 1)).slice(-2);
       const day = ('00' + now2.getDate()).slice(-2);
       const allowed = [(parseInt(year+month+day)).toString()];
       const rows3 = pre_rows3.filter(row => allowed.includes(row.date));
-      console.log(rows3);
-      const rows3_1 = rows3.filter(rowrow => ['1'].includes(rowrow.exception_type)).map(item => item.service_id); //service_idを追加するもの
-      const rows3_2 = rows3.filter(rowrow => ['2'].includes(rowrow.exception_type)).map(item => item.service_id); //service_idを削除するもの
-      console.log(rows3_1, rows3_2);
+      // console.log(rows3);
+      const rows3_1 = rows3.filter(rowrow => ['1'].includes(rowrow.exception_type)).map(item => item.service_id); //service_idに追加するもの
+      const rows3_2 = rows3.filter(rowrow => ['2'].includes(rowrow.exception_type)).map(item => item.service_id); //service_idから削除するもの
+      // console.log(rows3_1, rows3_2);
       const rows2 = pre_rows2
         .filter(item => !rows3_2.includes(item))
         .concat(rows3_2.filter(item => !pre_rows2.includes(item)));
-      console.log(rows2);
+      // console.log(rows2);
       const service_id = [...new Set(rows2.concat(rows3_1))];
-      console.log(service_id);
+      // console.log(service_id);
       
       // console.log(pre_rows);
       const today = new Date();
