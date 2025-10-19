@@ -72,10 +72,10 @@
       const res  = await fetch(CSV_PATH, { cache: 'no-store' });
       const text = await res.text();
 
-      const res2 = await fetch("calendar_minamikumamotosta.csv", { cache: 'no-store' });
+      const res2 = await fetch("calendar.csv", { cache: 'no-store' });
       const text2 = await res2.text();
 
-      const res3 = await fetch("calendarexc_minamikumamotosta.csv", { cache: 'no-store' })
+      const res3 = await fetch("calendarexc.csv", { cache: 'no-store' })
       const text3 = await res3.text();
       // console.log(text);
 
