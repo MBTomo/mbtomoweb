@@ -104,13 +104,15 @@
       headers = lines.shift().split(',').map(h => h.trim());
       const pre_rows3 = lines.map(line => {
         let cols = line.split(',').map(c => c.trim());
-        const year = now2.getFullYear();
-        const month = ('00' + (now2.getMonth() + 1)).slice(-2);
-        const day = ('00' + now2.getDate()).slice(-2);
-        console.log((parseInt(year+month+day)-1));
-        return cols.filter(row => ['20251018'].includes(row.date)); //一日前
+        return headers.reduce((o, k, i) => (o[k] = cols[i], o), {});
       });
       console.log(pre_rows3);
+      
+      const year = now2.getFullYear();
+      const month = ('00' + (now2.getMonth() + 1)).slice(-2);
+      const day = ('00' + now2.getDate()).slice(-2);
+      console.log((parseInt(year+month+day)-1));
+      console.log( pre_rows3.filter(row => ['20251018'].includes(row.date)) );
       
       // console.log(pre_rows);
       const today = new Date();
