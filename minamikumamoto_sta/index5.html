@@ -113,7 +113,7 @@
       const day = ('00' + now2.getDate()).slice(-2);
       const allowed = [(parseInt(year+month+day)-1).toString()];
       const rows3 = pre_rows3.filter(row => allowed.includes(row.date));
-      console.log(rows3.exception_type);
+      console.log(rows3);
       
       // console.log(pre_rows);
       const today = new Date();
