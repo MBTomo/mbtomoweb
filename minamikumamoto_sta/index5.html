@@ -107,7 +107,7 @@
         const year = now2.getFullYear();
         const month = ('00' + (now2.getMonth() + 1)).slice(-2);
         const day = ('00' + now2.getDate()).slice(-2);
-        return cols.filter(row => [(year+month+day).toString].includes(row.date));
+        return cols.filter(row => [(parseInt(year+month+day)-1).toString].includes(row.date)); //一日前
       });
       console.log(pre_rows3);
       
