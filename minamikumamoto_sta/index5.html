@@ -112,9 +112,10 @@
       const day = ('00' + now2.getDate()).slice(-2);
       const allowed = [(parseInt(year+month+day)).toString()];
       const rows3 = pre_rows3.filter(row => allowed.includes(row.date)).map(item => item.service_id);
+      
       const rows3_1 = rows3.filter(row => ['1'].includes(row.exception_type)); //service_idを追加するもの
       const rows3_2 = rows3.filter(row => ['2'].includes(row.exception_type)); //service_idを削除するもの
-      console.log(rows3_1, row3_2);
+      console.log(rows3_1, rows3_2);
       const rows2 = pre_rows2
         .filter(item => !rows3_2.includes(item))
         .concat(rows3_2.filter(item => !pre_rows2.includes(item)));
