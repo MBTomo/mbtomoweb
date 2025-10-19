@@ -90,6 +90,7 @@
 
       lines   = text2.split('\n').map(l => l.trim()).filter(l => l);
       headers = lines.shift().split(',').map(h => h.trim());
+      const now2 = new Date();
       const serviceIdIndex = headers.indexOf('service_id');
       const todayIndex = now2.getDay() + 2;
       const pre_rows2 = lines.map(line => {
