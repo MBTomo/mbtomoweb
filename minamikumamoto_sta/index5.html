@@ -95,7 +95,9 @@
         let cols = line.split(',').map(c => c.trim());
         console.log(cols);
         return headers.reduce((o, k, i) => {
-          
+          if (cols[now2+1] === 1) {
+            console.log('a' + cols);
+          }
           return (o[k] = cols[i], o);
         }, {});
       });
