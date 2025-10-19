@@ -95,7 +95,8 @@
       const todayIndex = now2.getDay() + 2;
       const pre_rows2 = lines.map(line => {
         const cols = line.split(',').map(c => c.trim());
-        return cols[todayIndex] === '1' ? [cols[serviceIdIndex]] : [];
+        const nested = (cols[todayIndex] === '1' ? [cols[serviceIdIndex]] : []);
+        return nested.flatMap(item => item.length ? item : []);
       });
       console.log(pre_rows2);
       
