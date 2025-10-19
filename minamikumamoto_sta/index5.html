@@ -93,8 +93,9 @@
       const now2 = new Date();
       const pre_rows2 = lines.map(line => {
         let cols = line.split(',').map(c => c.trim());
-        console.log(lines);
+        console.log(cols);
         return headers.reduce((o, k, i) => {
+          
           return (o[k] = cols[i], o);
         }, {});
       });
