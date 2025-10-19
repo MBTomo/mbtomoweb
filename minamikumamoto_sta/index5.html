@@ -115,8 +115,8 @@
       const allowed = [(20251018).toString()];
       const rows3 = pre_rows3.filter(row => allowed.includes(row.date)).map(item => item.service_id);
       
-      const rows3_1 = rows3.filter(row => ['1'].includes(row.exception_type)); //service_idを追加するもの
-      const rows3_2 = rows3.filter(row => ['2'].includes(row.exception_type)); //service_idを削除するもの
+      const rows3_1 = rows3.filter(rowrow => ['1'].includes(rowrow.exception_type)); //service_idを追加するもの
+      const rows3_2 = rows3.filter(rowrow => ['2'].includes(rowrow.exception_type)); //service_idを削除するもの
       console.log(rows3_1, rows3_2);
       const rows2 = pre_rows2
         .filter(item => !rows3_2.includes(item))
