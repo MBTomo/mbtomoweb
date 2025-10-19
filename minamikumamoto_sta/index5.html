@@ -93,14 +93,16 @@
       const now2 = new Date();
       const pre_rows2 = lines.map(line => {
         let cols = line.split(',').map(c => c.trim());
-        console.log(cols[now2.getDay()+2]);
+        let count = 0
         return headers.reduce((o, k, i) => {
-          if (cols[now2+2] === '1') {
+          if (cols[now2.getDay()+2] === '1') {
             console.log('a' + cols);
+            return (o[count] = k, o);
+            count += 1;
           }
-          return (o[k] = cols[i], o);
-        }, {});
+        }, []);
       });
+      console.log(pre_rows2);
       
       lines   = text3.split('\n').map(l => l.trim()).filter(l => l);
       headers = lines.shift().split(',').map(h => h.trim());
