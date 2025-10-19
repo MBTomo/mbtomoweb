@@ -95,9 +95,9 @@
         let cols = line.split(',').map(c => c.trim());
         let count = 0
         return headers.reduce((o, k, i) => {
-          if (cols[now2.getDay()+2] === '1') {
+          if (cols[now2.getDay()+2] === '1' && k = "service_id") {
             console.log('a' + cols);
-            return (o[count] = k, o);
+            return (o = cols[k], '');
             count += 1;
           }
         }, []);
