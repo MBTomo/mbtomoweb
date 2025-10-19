@@ -93,11 +93,11 @@
       const now2 = new Date();
       const serviceIdIndex = headers.indexOf('service_id');
       const todayIndex = now2.getDay() + 2;
-      const pre_rows2 = lines.map(line => {
+      const nested = lines.map(line => {
         const cols = line.split(',').map(c => c.trim());
-        const nested = (cols[todayIndex] === '1' ? [cols[serviceIdIndex]] : []);
-        return nested.flatMap(item => item.length ? item : []);
+        return (cols[todayIndex] === '1' ? [cols[serviceIdIndex]] : []);
       });
+      const pre_rows2 = nested.flat().filter(Boolean);
       console.log(pre_rows2);
       
       lines   = text3.split('\n').map(l => l.trim()).filter(l => l);
