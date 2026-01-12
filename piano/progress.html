@@ -29,7 +29,7 @@
 	
 		<div class="all-family">
 			<script>
-				let progress = {p1:10, p2:10};
+				let progress = {p1:10, p2:90}; /* 進捗率(%)の変数。ここを変える。 */
 				document.addEventListener('DOMContentLoaded', function () {
 					document.querySelectorAll('.task-progress').forEach(el => {
 						const id = el.dataset.id;
@@ -41,6 +41,10 @@
 				<h3>Ave mujica</h3>
 				<label>進捗状況 <script>document.write(progress.p1);</script>%:
 					<progress class="task-progress" data-id="p1" value="0" max="100"></progress>
+				</label>
+				<h3>Afterglow</h3>
+				<label>進捗状況 <script>document.write(progress.p2);</script>%:
+					<progress class="task-progress" data-id="p2" value="0" max="100"></progress>
 				</label>
 			</div>
 			<div id="completed"><h2><font size="+3" face="noto-sans-jp">制作済のピアノアレンジ</font></h2>
