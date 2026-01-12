@@ -29,7 +29,7 @@
 	
 		<div class="all-family">
 			<script>
-				let progress = {p1:10, p2:90}; /* 進捗率(%)の変数。ここを変える。 */
+				let progress = {ave:10, aftgl:10, sukidie:15, trig:0}; /* 進捗率(%)の変数。ここを変える。 */
 				document.addEventListener('DOMContentLoaded', function () {
 					document.querySelectorAll('.task-progress').forEach(el => {
 						const id = el.dataset.id;
@@ -39,13 +39,25 @@
 			</script>
 			<div id="progress"><h2><font size="+3" face="noto-sans-jp">制作中のピアノアレンジ</font></h2>
 				<h3>① Ave mujica</h3>
-				<label>進捗状況 <script>document.write(progress.p1);</script>%:
-					<progress class="task-progress" data-id="p1" value="0" max="100"></progress>
+				<label>進捗状況 <script>document.write(progress.ave);</script>%:
+					<progress class="task-progress" data-id="ave" value="0" max="100"></progress>
 				</label>
+				<p>R8/01/13：開設</p>
 				<h3>② Afterglow</h3>
-				<label>進捗状況 <script>document.write(progress.p2);</script>%:
-					<progress class="task-progress" data-id="p2" value="0" max="100"></progress>
+				<label>進捗状況 <script>document.write(progress.aftgl);</script>%:
+					<progress class="task-progress" data-id="aftgl" value="0" max="100"></progress>
 				</label>
+				<p>R8/01/13：開設</p>
+				<h3>③ スキスキDieスキ超Ayeシテル</h3>
+				<label>進捗状況 <script>document.write(progress.sukidie);</script>%:
+					<progress class="task-progress" data-id="sukidie" value="0" max="100"></progress>
+				</label>
+				<p>R8/01/13：開設</p>
+				<h3>④ Triggerメドレー/h3>
+				<label>進捗状況 <script>document.write(progress.trig);</script>%:
+					<progress class="task-progress" data-id="trig" value="0" max="100"></progress>
+				</label>
+				<p>R8/01/13：開設</p>
 			</div>
 			<div id="completed"><h2><font size="+3" face="noto-sans-jp">制作済のピアノアレンジ</font></h2>
 				<p>No Entry</p>
