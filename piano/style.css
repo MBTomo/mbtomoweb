@@ -78,6 +78,6 @@ img:hover{opacity: .7;}
   height: 100%;
 }
 progress {
-  /*width: 80%;  プログレスバーの幅を調整 */
+  width: 80%;  /* プログレスバーの幅を調整 */
   height: 20px; /* プログレスバーの高さを調整 */
 }
