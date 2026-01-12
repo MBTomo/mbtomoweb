@@ -29,12 +29,19 @@
 	
 		<div class="all-family">
 			<script>
-				let progress1 = 10;
+				let progress = {p1:10, p2:10};
+				document.addEventListener('DOMContentLoaded', function () {
+					document.querySelectorAll('.task-progress').forEach(el => {
+						const id = el.dataset.id;
+						el.value = progress[id] ?? 0;
+					});
+				});
 			</script>
 			<div id="progress"><h2><font size="+3" face="noto-sans-jp">制作中のピアノアレンジ</font></h2>
 				<h3>Ave mujica</h3>
-				<label for="task-progress">進捗状況 <script>document.write(progress1);</script> %:</label>
-				<progress id="task-progress" value="progress1" max="100"></progress>
+				<label>進捗状況 <script>document.write(progress.p1);</script>%:
+					<progress class="task-progress" data-id="p1" value="0" max="100"></progress>
+				</label>
 			</div>
 			<div id="completed"><h2><font size="+3" face="noto-sans-jp">制作済のピアノアレンジ</font></h2>
 				<p>No Entry</p>
