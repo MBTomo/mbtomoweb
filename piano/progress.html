@@ -30,7 +30,7 @@
 	
 		<div class="all-family">
 			<script>
-				let progress = {ave:10, aftgl:10, sukidie:15, trig:0}; /* 進捗率(%)の変数。ここを変える。 */
+				let progress = {ave:10, aftgl:10, sukidie:15, lastre:0}; /* 進捗率(%)の変数。ここを変える。 */
 				document.addEventListener('DOMContentLoaded', function () {
 					document.querySelectorAll('.task-progress').forEach(el => {
 						const id = el.dataset.id;
@@ -63,9 +63,9 @@
 					<p>R8/01/13：開設</p>
 				</details>
 				<br>
-				<h3>④ Triggerメドレー</h3>
-				<label>進捗状況 <script>document.write(progress.trig);</script>% :
-					<progress class="task-progress" data-id="trig" value="0" max="100"></progress>
+				<h3>④ Last-resort</h3>
+				<label>進捗状況 <script>document.write(progress.latre);</script>% :
+					<progress class="task-progress" data-id="lastre" value="0" max="100"></progress>
 				<details><summary>採譜履歴</summary>
 					<p>R8/01/13：開設</p>
 				</details>
